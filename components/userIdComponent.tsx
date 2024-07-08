@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     marginRight: 10,
-    color: "green",
+    color: "#0087BD",
     fontWeight: "bold",
     fontSize: 18,
   },

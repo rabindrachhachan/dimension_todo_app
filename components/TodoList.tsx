@@ -57,6 +57,20 @@ const TodoList: React.FC = () => {
     await storeTodos(updatedTodos);
   };
 
+  const handleCompleteTodo = async (id: string) => {
+    let updatedTodos = [...todos];
+    const editIndex = updatedTodos.findIndex((item: Todo) => item.id === id);
+    if (editIndex !== -1) {
+      let newTodo = {
+        ...(todos[editIndex] ?? {}),
+        completed: true,
+      };
+      updatedTodos[editIndex] = newTodo;
+    }
+    setTodos(updatedTodos);
+    await storeTodos(updatedTodos);
+  };
+
   const renderItem = ({ item, index }: { item: Todo; index: number }) => {
     return (
       <ListItem
@@ -64,6 +78,7 @@ const TodoList: React.FC = () => {
         index={index}
         handleEdit={handleEditTodo}
         handleDelete={handleRemoveTodo}
+        handleComplete={handleCompleteTodo}
         editIndex={editIndex}
       />
     );
@@ -98,12 +113,14 @@ const ListItem = ({
   editIndex,
   handleEdit,
   handleDelete,
+  handleComplete,
 }: {
   item: Todo;
   index: number;
   editIndex: number;
   handleEdit: (index: number) => void;
   handleDelete: (id: string) => void;
+  handleComplete: (id: string) => void;
 }) => {
   if (!item.task) return <></>;
 
@@ -115,11 +132,20 @@ const ListItem = ({
     handleDelete(item.id);
   };
 
-  const focused = editIndex === index;
+  const handleCompletePress = () => {
+    handleComplete(item.id);
+  };
+
+  const focused: boolean = editIndex === index;
+  const completed: boolean = item.completed;
 
   return (
     <View
-      style={[styles.task, focused && { borderBottomColor: "#FCCF98" }]}
+      style={[
+        styles.task,
+        focused && { borderBottomColor: "#FCCF98" },
+        completed && { backgroundColor: "#04756C" },
+      ]}
       key={String(index)}
     >
       <ThemedText style={styles.label}>{item.task}</ThemedText>
@@ -135,6 +161,12 @@ const ListItem = ({
           btnStyle={styles.btnStyle}
           onPress={handleDeletePress}
           title={"Delete"}
+        />
+        <ThemedButton
+          textStyle={styles.completeButton}
+          btnStyle={styles.btnStyle}
+          onPress={handleCompletePress}
+          title={completed ? "Completed" : "Mark Completed"}
         />
       </View>
     </View>
@@ -171,12 +203,18 @@ const styles = StyleSheet.create({
   },
   editButton: {
     marginRight: 10,
-    color: "green",
+    color: "#0087BD",
     fontWeight: "bold",
     fontSize: 18,
   },
   deleteButton: {
     color: "red",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  completeButton: {
+    marginRight: 10,
+    color: "#00A86B",
     fontWeight: "bold",
     fontSize: 18,
   },
