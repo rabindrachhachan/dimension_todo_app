@@ -45,6 +45,7 @@ const UserIdComponent: React.FC = () => {
         placeholder="Enter User ID"
         onSave={handleSave}
         btnText={isEditing ? "Update User" : "Save User"}
+        disabled={!tempUserId}
       />
       {userId ? (
         <Item
@@ -95,7 +96,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 10,
   },
-
   task: {
     flexDirection: "row",
     justifyContent: "space-between",

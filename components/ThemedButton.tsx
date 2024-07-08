@@ -7,23 +7,31 @@ import {
   TextStyle,
 } from "react-native";
 
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
 
 export type ThemedButtonProps = ButtonProps & {
   title: string;
   btnStyle?: ViewStyle;
   textStyle?: TextStyle;
+  disabled?: boolean;
 };
 
 function ThemedButton({
   btnStyle,
   textStyle,
   title,
+  disabled,
   ...rest
 }: ThemedButtonProps) {
   return (
-    <TouchableOpacity style={[styles.addButton, btnStyle]} {...rest}>
+    <TouchableOpacity
+      style={[
+        styles.addButton,
+        btnStyle,
+        disabled && { backgroundColor: "#E5E5E5" },
+      ]}
+      {...rest}
+    >
       <ThemedText style={[styles.addButtonText, textStyle]}>{title}</ThemedText>
     </TouchableOpacity>
   );
