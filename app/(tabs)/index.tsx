@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import UserIdComponent from "../../components/userIdComponent";
+import UserIdComponent from "../../components/UserIdComponent";
 import TodoList from "@/components/TodoList";
 
 const Home: React.FC = () => {
