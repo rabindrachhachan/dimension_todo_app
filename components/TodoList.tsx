@@ -176,7 +176,6 @@ const ListItem = ({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    marginTop: 20,
     flex: 1,
   },
   label: {
