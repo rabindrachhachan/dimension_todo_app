@@ -1,13 +1,13 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import UserIdComponent from "../../components/userIdComponent";
+import TodoList from "@/components/TodoList";
 
 const Home: React.FC = () => {
   return (
-    <SafeAreaView>
-      <View>
-        <UserIdComponent />
-      </View>
+    <SafeAreaView style={styles.container}>
+      <UserIdComponent />
+      <TodoList />
     </SafeAreaView>
   );
 };
@@ -15,14 +15,7 @@ const Home: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scrollView: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 20,
+    backgroundColor: "#F2F2F2",
   },
 });
 

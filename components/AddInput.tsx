@@ -9,6 +9,7 @@ interface CustomInputBoxProps {
   onSave: () => void;
   placeholder?: string;
   btnText?: string;
+  disabled?: boolean;
 }
 
 const AddInputBox: React.FC<CustomInputBoxProps> = ({
@@ -17,6 +18,7 @@ const AddInputBox: React.FC<CustomInputBoxProps> = ({
   onSave,
   placeholder,
   btnText = "Save",
+  disabled,
 }) => {
   return (
     <>
@@ -29,7 +31,7 @@ const AddInputBox: React.FC<CustomInputBoxProps> = ({
         />
       </View>
 
-      <ThemedButton title={btnText} onPress={onSave} />
+      <ThemedButton title={btnText} onPress={onSave} disabled={disabled} />
     </>
   );
 };
