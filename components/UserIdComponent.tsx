@@ -4,6 +4,12 @@ import { storeUserId, getUserId, removeUserId } from "../modules/storage";
 import { ThemedText } from "./ThemedText";
 import AddInputBox from "./AddInput";
 import ThemedButton from "./ThemedButton";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const UserIdComponent: React.FC = () => {
   const [userId, setUserId] = useState<string>("");
@@ -68,25 +74,48 @@ const Item = ({
   userId: string;
   handleDelete: () => void;
   handleEdit: () => void;
-}) => (
-  <View style={styles.task}>
-    <Text style={styles.itemList}>{userId}</Text>
-    <View style={styles.taskButtons}>
-      <ThemedButton
-        textStyle={styles.editButton}
-        btnStyle={styles.btnStyle}
-        onPress={handleEdit}
-        title={"Edit"}
-      />
-      <ThemedButton
-        textStyle={styles.deleteButton}
-        btnStyle={styles.btnStyle}
-        onPress={handleDelete}
-        title={"Delete"}
-      />
-    </View>
-  </View>
-);
+}) => {
+  const translateY = useSharedValue(50);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    translateY.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.out(Easing.exp),
+    });
+    opacity.value = withTiming(1, {
+      duration: 500,
+      easing: Easing.out(Easing.exp),
+    });
+  }, []);
+
+  const addAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+      opacity: opacity.value,
+    };
+  });
+
+  return (
+    <Animated.View style={[styles.task, addAnimatedStyle]}>
+      <Text style={styles.itemList}>{userId}</Text>
+      <View style={styles.taskButtons}>
+        <ThemedButton
+          textStyle={styles.editButton}
+          btnStyle={styles.btnStyle}
+          onPress={handleEdit}
+          title={"Edit"}
+        />
+        <ThemedButton
+          textStyle={styles.deleteButton}
+          btnStyle={styles.btnStyle}
+          onPress={handleDelete}
+          title={"Delete"}
+        />
+      </View>
+    </Animated.View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -100,14 +129,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 15,
-    fontSize: 18,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    backgroundColor: "white",
+    borderRadius: 4,
   },
   itemList: {
-    fontSize: 19,
+    fontSize: 16,
+
+    paddingHorizontal: 16,
   },
   taskButtons: {
     flexDirection: "row",
+    paddingTop: 12,
   },
   editButton: {
     marginRight: 10,

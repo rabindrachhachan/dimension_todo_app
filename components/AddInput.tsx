@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Button, StyleSheet } from "react-native";
+import { View, Button, StyleSheet, ViewStyle } from "react-native";
 import ThemedTextInput from "./ThemedInput";
 import ThemedButton from "./ThemedButton";
 
@@ -10,6 +10,7 @@ interface CustomInputBoxProps {
   placeholder?: string;
   btnText?: string;
   disabled?: boolean;
+  btnStyle?: ViewStyle[] | ViewStyle;
 }
 
 const AddInputBox: React.FC<CustomInputBoxProps> = ({
@@ -31,27 +32,33 @@ const AddInputBox: React.FC<CustomInputBoxProps> = ({
         />
       </View>
 
-      <ThemedButton title={btnText} onPress={onSave} disabled={disabled} />
+      <ThemedButton
+        title={btnText}
+        onPress={onSave}
+        disabled={disabled}
+        btnStyle={[disabled ? { backgroundColor: "#E5E5E5" } : {}]}
+      />
     </>
   );
 };
 
 const styles = StyleSheet.create({
   inputContainer: {
-    height: 40,
+    height: 52,
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 10,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
+    borderColor: "#E8E8E8",
+    padding: 16,
     marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 8,
     fontSize: 18,
     width: "100%",
-    minHeight: 40,
+    minHeight: 48,
+    backgroundColor: "white",
   },
 });
 
