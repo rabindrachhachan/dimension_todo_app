@@ -1,5 +1,4 @@
 import {
-  Text,
   type ButtonProps,
   StyleSheet,
   TouchableOpacity,
@@ -11,8 +10,8 @@ import { ThemedText } from "./ThemedText";
 
 export type ThemedButtonProps = ButtonProps & {
   title: string;
-  btnStyle?: ViewStyle;
-  textStyle?: TextStyle;
+  btnStyle?: ViewStyle[] | ViewStyle;
+  textStyle?: TextStyle[] | TextStyle;
   disabled?: boolean;
 };
 
@@ -25,11 +24,8 @@ function ThemedButton({
 }: ThemedButtonProps) {
   return (
     <TouchableOpacity
-      style={[
-        styles.addButton,
-        btnStyle,
-        disabled && { backgroundColor: "#E5E5E5" },
-      ]}
+      style={[styles.addButton, btnStyle]}
+      disabled={disabled}
       {...rest}
     >
       <ThemedText style={[styles.addButtonText, textStyle]}>{title}</ThemedText>

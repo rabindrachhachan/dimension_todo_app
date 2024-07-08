@@ -5,6 +5,13 @@ import uuid from "react-native-uuid";
 import AddInputBox from "./AddInput";
 import { ThemedText } from "./ThemedText";
 import ThemedButton from "./ThemedButton";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  Easing,
+  runOnJS,
+} from "react-native-reanimated";
 
 const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -122,39 +129,110 @@ const ListItem = ({
   handleDelete: (id: string) => void;
   handleComplete: (id: string) => void;
 }) => {
+  const isFocused: boolean = editIndex === index;
+  const isCompleted: boolean = item.completed;
+
+  const translateY = useSharedValue(50);
+  const translateX = useSharedValue(0);
+  const opacity = useSharedValue(0);
+  const deleteOpacity = useSharedValue(1);
+  const lineThrough = useSharedValue(0);
+  const highlight = useSharedValue(0);
+
+  useEffect(() => {
+    translateY.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.out(Easing.exp),
+    });
+    opacity.value = withTiming(1, {
+      duration: 500,
+      easing: Easing.out(Easing.exp),
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isCompleted) {
+      lineThrough.value = withTiming(1, { duration: 500 });
+    } else {
+      lineThrough.value = withTiming(0, { duration: 500 });
+    }
+  }, [isCompleted]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      highlight.value = withTiming(0, { duration: 1000 });
+    }
+  }, [isFocused]);
+
+  const addAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+      opacity: opacity.value,
+    };
+  });
+
+  const deleteAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: deleteOpacity.value,
+      transform: [{ translateX: translateX.value }],
+    };
+  });
+
+  const textStyle = useAnimatedStyle(() => {
+    return {
+      textDecorationLine: lineThrough.value ? "line-through" : "none",
+      color: lineThrough.value ? "grey" : "black",
+    };
+  });
+
+  const highlightStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: highlight.value === 1 ? "#FCCF98" : "white",
+    };
+  });
+
   if (!item.task) return <></>;
 
   const handleEditPress = () => {
-    handleEdit(index);
+    if (!isCompleted) {
+      handleEdit(index);
+      highlight.value = withTiming(1, { duration: 50 });
+    }
   };
 
   const handleDeletePress = () => {
-    handleDelete(item.id);
+    translateX.value = withTiming(-100, { duration: 500 }, () => {
+      runOnJS(handleDelete)(item.id);
+    });
+    deleteOpacity.value = withTiming(0, { duration: 500 });
   };
 
   const handleCompletePress = () => {
-    handleComplete(item.id);
+    if (!isCompleted) {
+      handleComplete(item.id);
+    }
   };
 
-  const focused: boolean = editIndex === index;
-  const completed: boolean = item.completed;
-
   return (
-    <View
+    <Animated.View
       style={[
         styles.task,
-        focused && { borderBottomColor: "#FCCF98" },
-        completed && { backgroundColor: "#04756C" },
+        addAnimatedStyle,
+        deleteAnimatedStyle,
+        highlightStyle,
       ]}
       key={String(index)}
     >
-      <ThemedText style={styles.label}>{item.task}</ThemedText>
+      <Animated.Text style={[styles.itemtext, textStyle]}>
+        {item.task}
+      </Animated.Text>
       <View style={styles.taskButtons}>
         <ThemedButton
-          textStyle={styles.editButton}
+          textStyle={[styles.editButton, isCompleted ? { color: "grey" } : {}]}
           btnStyle={styles.btnStyle}
           onPress={handleEditPress}
           title={"Edit"}
+          disabled={isCompleted}
         />
         <ThemedButton
           textStyle={styles.deleteButton}
@@ -163,13 +241,17 @@ const ListItem = ({
           title={"Delete"}
         />
         <ThemedButton
-          textStyle={styles.completeButton}
+          textStyle={[
+            styles.completeButton,
+            isCompleted ? { color: "grey" } : {},
+          ]}
           btnStyle={styles.btnStyle}
           onPress={handleCompletePress}
-          title={completed ? "Completed" : "Mark Completed"}
+          title={isCompleted ? "Completed" : "Mark Completed"}
+          disabled={isCompleted}
         />
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -193,7 +275,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   itemtext: {
-    fontSize: 12,
+    fontSize: 16,
+    marginBottom: 10,
+    padding: 16,
   },
   taskButtons: {
     flexDirection: "row",
