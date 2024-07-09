@@ -1,44 +1,29 @@
 import React from "react";
-import { View, Button, StyleSheet, ViewStyle } from "react-native";
+import { View, StyleSheet, TextStyle } from "react-native";
 import ThemedTextInput from "./ThemedInput";
-import ThemedButton from "./ThemedButton";
 
 interface CustomInputBoxProps {
   value: string;
   onChangeText: (text: string) => void;
-  onSave: () => void;
   placeholder?: string;
-  btnText?: string;
-  disabled?: boolean;
-  btnStyle?: ViewStyle[] | ViewStyle;
+  textStyle?: TextStyle[] | TextStyle;
 }
 
-const AddInputBox: React.FC<CustomInputBoxProps> = ({
+const AddInputBox = ({
   value,
   onChangeText,
-  onSave,
   placeholder,
-  btnText = "Save",
-  disabled,
-}) => {
+  textStyle,
+}: CustomInputBoxProps) => {
   return (
-    <>
-      <View style={styles.inputContainer}>
-        <ThemedTextInput
-          style={styles.input}
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-        />
-      </View>
-
-      <ThemedButton
-        title={btnText}
-        onPress={onSave}
-        disabled={disabled}
-        btnStyle={[disabled ? { backgroundColor: "#E5E5E5" } : {}]}
+    <View style={styles.inputContainer}>
+      <ThemedTextInput
+        style={[styles.input, textStyle]}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
       />
-    </>
+    </View>
   );
 };
 
@@ -47,15 +32,15 @@ const styles = StyleSheet.create({
     height: 52,
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 10,
+    justifyContent: "flex-start",
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
     borderColor: "#E8E8E8",
-    padding: 16,
-    marginBottom: 10,
+    paddingHorizontal: 8,
     borderRadius: 8,
-    fontSize: 18,
+    fontSize: 12,
     width: "100%",
     minHeight: 48,
     backgroundColor: "white",

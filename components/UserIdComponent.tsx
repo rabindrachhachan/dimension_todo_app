@@ -16,6 +16,8 @@ const UserIdComponent: React.FC = () => {
   const [tempUserId, setTempUserId] = useState<string>("");
   const [isEditing, setEditing] = useState<boolean>(false);
 
+  const disabled = !tempUserId;
+
   const fetchUserId = async () => {
     const storedUserId = await getUserId();
     setUserId(storedUserId ?? "");
@@ -49,9 +51,12 @@ const UserIdComponent: React.FC = () => {
         value={tempUserId}
         onChangeText={setTempUserId}
         placeholder="Enter User ID"
-        onSave={handleSave}
-        btnText={isEditing ? "Update User" : "Save User"}
-        disabled={!tempUserId}
+      />
+      <ThemedButton
+        disabled={disabled}
+        btnStyle={[disabled ? { backgroundColor: "#E5E5E5" } : {}]}
+        onPress={handleSave}
+        title={isEditing ? "Update User" : "Save User"}
       />
       {userId ? (
         <Item
